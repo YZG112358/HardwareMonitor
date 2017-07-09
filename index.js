@@ -18,7 +18,7 @@ app.use(logger('dev'))
 app.use(bodyParser.json()) //parses json, multi-part (file), url-encoded 
  
 app.get('/', function(req, res) {
-  afterLoad('localhost:42000, function(html){
+  afterLoad('localhost:42000', function(html){
 		fs.writeFile('demofile1.html', html, function(err){
   			if (err) throw err;
   			console.log('Saved!');
