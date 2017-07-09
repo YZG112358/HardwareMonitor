@@ -17,20 +17,10 @@ app.set('port', process.env.PORT || 3000)
 app.use(logger('dev'))
 app.use(bodyParser.json()) //parses json, multi-part (file), url-encoded 
  
-app.get('/', function(req, res) {
-  var html=afterLoad('localhost:42000');
-    fs.writeFile('demofile1.html', html, function(err){
-        console.log('Saved!');
-      });
-
-
-    
-
-    fs.readFile('demofile1.html', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(data);
-      return res.end();
-    });
+app.get('/', function(req, res) { 
+    var data = JSON.parse(afterLoad('http://localhost:42000/getstat') || '{}');
+    res.write(data.result[0].temperature);
+    return res.end();
 })
  
 var server = http.createServer(app)
