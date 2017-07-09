@@ -12,13 +12,34 @@ var afterLoad = require('after-load');
 var app = express()
  
 var publicDir = path.join(__dirname, 'public')
- 
+
+var options = {
+  host: 'http://localhost',
+  path: '/',
+  //since we are listening on a custom port, we need to specify it by hand
+  port: '42000',
+  //This is what changes the request to a POST request
+  method: 'GET'
+};
+
+callback = function(response) {
+  var str = ''
+  response.on('data', function (chunk) {
+    str += chunk;
+  });
+
+  response.on('end', function () {
+    console.log(str);
+  });
+}
+
+
 app.set('port', process.env.PORT || 3000)
 app.use(logger('dev'))
 app.use(bodyParser.json()) //parses json, multi-part (file), url-encoded 
  
 app.get('/', function(req, res) { 
-    var data = JSON.parse(afterLoad('http://localhost:42000/getstat') || '{}');
+    var data = JSON.parse(http.request(options, callback));
     res.write(data.result[0].temperature);
     return res.end();
 })
